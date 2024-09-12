@@ -1,4 +1,4 @@
-import { Alert, Button, TextField, Modal, Box, Table, TableBody, TableRow, TableHead, TableContainer, TableCell, Paper, createFilterOptions } from '@mui/material';
+import { Alert, Button, TextField, Modal, Box, Table, TableBody, TableRow, TableHead, TableContainer, TableCell, Paper, Typography } from '@mui/material';
 import * as React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
@@ -59,6 +59,7 @@ export default function Appointment(props) {
             time: "",
             Amount: "",
             status: "",
+            reportFile: null,
         }
       });
 
@@ -68,7 +69,12 @@ export default function Appointment(props) {
 
       const createAppointment = async() => {
         try {
-            await axios.post(`/doctor/appointments/${props.id}`, appointments);
+            await axios.post(`/doctor/appointments/${props.id}`, {
+              headers:{
+                'Content-Type': 'multipart/form-data',
+              },
+              appointments: appointments,
+            });
             setAlertContent("Appointment Booked");
             setAlert(true);
             setAlertSeverity('success');
@@ -80,7 +86,14 @@ export default function Appointment(props) {
             setAlertSeverity('error');
         }
 
-      }
+      };
+      // Function to handle file download for a specific appointment
+    const handleFileDownload = (reportUrl) => {
+      const link = document.createElement('a');
+      link.href = reportUrl;
+      link.download = reportUrl.split('/').pop();
+      link.click();
+  };
 
     return(
         <>
@@ -108,7 +121,10 @@ export default function Appointment(props) {
                 <TableCell align="right">Date</TableCell>
                 <TableCell align="right">Time</TableCell>
                 <TableCell align="right">Notes</TableCell>
-                <TableCell align="right">status</TableCell>
+                
+                <TableCell align="right">Amount</TableCell>
+                <TableCell align="right">Status</TableCell>
+                <TableCell align="right">Reports</TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
@@ -121,7 +137,18 @@ export default function Appointment(props) {
                 <TableCell align="right">{moment(appointments.date).format('DD/MM/YYYY')}</TableCell>
                 <TableCell align="right">{appointments.time}</TableCell>
                 <TableCell align="right">{appointments.notes}</TableCell> 
-                <TableCell align="right">{appointments.status}</TableCell>                 
+               
+                <TableCell align="right">{appointments.Amount}</TableCell>
+                <TableCell align="right">{appointments.status}</TableCell>
+                <TableCell align="right">
+                    {appointments.reportUrl ? (
+                        <Button variant="outlined" onClick={() => handleFileDownload(appointments.reportUrl)}>
+                             Download Report
+                              </Button>
+                                ) : (
+                                  "N/A"
+                                     )}
+                   </TableCell>                 
                 </TableRow>
             ))}
             </TableBody>
@@ -161,6 +188,12 @@ export default function Appointment(props) {
       <TextField id="outlined-basic" label="status" variant="outlined" value={appointments.status} onChange={(event => {
         setAppointments({ ...appointments, status: event.target.value})
       })}/>
+        <Typography>Report</Typography>
+                            <input
+                                type="file"
+                                accept=".pdf,.doc,.docx,.jpg,.png"
+                                onChange={(e) => setAppointments({ ...appointments, reportFile: e.target.files[0] })}
+                            />
       <Button variant="contained" onClick={createAppointment}>Add</Button>   
     </Box>
         </Box>

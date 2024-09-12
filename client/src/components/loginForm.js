@@ -15,7 +15,7 @@ function LoginForm() {
 
     <div>
 
-      <form className="Auth-form" onSubmit={handleSubmit}>
+      <form className="Auth-form" onSubmit={(e)=>handleSubmit(e)}>
           <div className="Auth-form-content">
             <h3 className="Auth-form-title">Sign In</h3>
             <div>

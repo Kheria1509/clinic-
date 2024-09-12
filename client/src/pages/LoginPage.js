@@ -15,7 +15,7 @@ function LoginPage() {
       justifyContent="center"
       style={{ minHeight: '100vh' }}
     >
-      <h1> Hospital Management System </h1>
+      <h1> Clinic Management System </h1>
       <Grid item xs={3}>
       <LoginForm />
       </Grid>   

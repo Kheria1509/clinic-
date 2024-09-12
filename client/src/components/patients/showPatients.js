@@ -29,7 +29,7 @@ export default function ShowPatients() {
 
   return (
     <>
-    <form onSubmit={applySearch(query)}>
+    <form onSubmit={()=>applySearch(query)}>
       <input type="text" placeholder="Search by last name..." className="search" onChange={event => setQuery(event.target.value)}/>
       <button type="submit"> Search </button>
     </form>

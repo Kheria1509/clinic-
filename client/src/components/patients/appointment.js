@@ -31,6 +31,7 @@ export default function PatientAppointment(props) {
 
     const fetchAppointments = async () => {
         const res = await axios.get(`/patient/appointments/${props.id}`);
+        console.log(res.data.appointments);
         setListOfAppointments(res.data.appointments);
     };
 
@@ -66,21 +67,23 @@ export default function PatientAppointment(props) {
 
     const createAppointment = async () => {
         try {
-            const formData = new FormData();
-            formData.append('doctorName', appointments.doctorName);
-            formData.append('doctorId', appointments.doctorId);
-            formData.append('reasonForAppointment', appointments.reasonForAppointment);
-            formData.append('date', appointments.date);
-            formData.append('time', appointments.time);
-            formData.append('notes', appointments.notes);
-            formData.append('Amount', appointments.Amount);
-            formData.append('status', appointments.status);
-            formData.append('reportFile', appointments.reportFile); // File upload
-
-            await axios.post(`/patient/appointments/${props.id}`, formData, {
+            // const formData = new FormData();
+            // formData.append('doctorName', appointments.doctorName);
+            // formData.append('doctorId', appointments.doctorId);
+            // formData.append('reasonForAppointment', appointments.reasonForAppointment);
+            // formData.append('date', appointments.date);
+            // formData.append('time', appointments.time);
+            // formData.append('notes', appointments.notes);
+            // formData.append('Amount', appointments.Amount);
+            // formData.append('status', appointments.status);
+            // formData.append('reportFile', appointments.reportFile); // File upload
+            
+            
+            await axios.post(`/patient/appointments/${props.id}`, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
+                appointments: appointments,
             });
 
             setAlertContent("Appointment Booked");
@@ -143,6 +146,8 @@ export default function PatientAppointment(props) {
                                             <TableCell align="right">{moment(appointments.date).format('DD/MM/YYYY')}</TableCell>
                                             <TableCell align="right">{appointments.time}</TableCell>
                                             <TableCell align="right">{appointments.notes}</TableCell>
+                                            <TableCell align="right">{appointments.Amount}</TableCell>
+                                            <TableCell align="right">{appointments.Status}</TableCell>
                                             
                                             <TableCell align="right">
                                                 {appointments.reportUrl ? (
@@ -153,7 +158,7 @@ export default function PatientAppointment(props) {
                                                     "N/A"
                                                 )}
                                             </TableCell>
-                                            <TableCell align="right">{appointments.status}</TableCell>
+                                            
                                         </TableRow>
                                     ))}
                                 </TableBody>
