@@ -4,7 +4,7 @@ const patientData = require("../models/patient")
 
 // Get list of all doctors
 const fetchDoctors = async(req,res) => {
-    const doctors = await doctorData.find().sort({"lastName":1});
+    const doctors = await doctorData.find().sort({"doctorid":1});
     res.json({doctors})
 }
 
@@ -83,53 +83,54 @@ const showAllDoctorAppointments = async(req,res) => {
 
 }
 
-// Create an appointment with the specified doctor
-const createDoctorAppointment = async(req,res) => {
-    id = req.params.id;
-    
-    const selectedDoctor = await doctorData.findById(id)
-    const appointment = req.body;
-    const newAppointment = new appointmentData({
-        patientName: appointment.patientName,
-        patientId: appointment.patientId,
-        doctorName: selectedDoctor.firstName + " " + selectedDoctor.lastName,
-        doctorId: id,
-        reasonForAppointment: appointment.reasonForAppointment,
-        date: appointment.date,
-        time: appointment.time,
-        notes: appointment.notes,
-    });
+// Create an appointment for the specified doctor
+const createDoctorAppointment = async (req, res) => {
+    const doctorId = req.params.id;
+    const appointment = req.body.appointments;
 
     try {
-        await patientData.findOne({
-        _id:newAppointment.patientId 
-    })
-    } catch (err) {
-        res.status(500).json({message: "Could not find patient with that ID"});
-        return;
-    }   
-    const today = new Date();
-    if(
-        newAppointment.date < today
-    ) {
-        res.status(500).json({message: "Please choose a future date"})
-    }
-    else if (await appointmentData.findOne({
-        doctorId: newAppointment.doctorId,
-        date: newAppointment.date,
-        time: newAppointment.time,
-    })) {
-        res.status(500).json({message: "Time slot is already booked"});
-    }
-    else {
-        try {
-            await newAppointment.save();
-            res.json({newAppointment});
-        } catch (error) {
-            res.status(409).json({ message: error.message });
+        const selectedDoctor = await doctorData.findById(doctorId);
+        if (!selectedDoctor) {
+            return res.status(404).json({ message: "Doctor not found" });
         }
-    }   
-}
+
+        const today = new Date();
+        if (new Date(appointment.date) < today) {
+            return res.status(400).json({ message: "Please choose a future date" });
+        }
+
+        const existingAppointment = await appointmentData.findOne({
+            doctorId: doctorId,
+            date: appointment.date,
+            time: appointment.time,
+        });
+
+        if (existingAppointment) {
+            return res.status(400).json({ message: "Time slot is already booked" });
+        }
+
+        const newAppointment = new appointmentData({
+            patientName: appointment.patientName,
+            patientId: appointment.patientId,
+            doctorName: selectedDoctor.firstName + " " + selectedDoctor.lastName,
+            doctorId: doctorId,
+            reasonForAppointment: appointment.reasonForAppointment,
+            date: appointment.date,
+            time: appointment.time,
+            notes: appointment.notes,
+            Amount: appointment.Amount,  // Ensure Amount is included
+            status: appointment.status,  // Ensure status is included
+        });
+        
+
+        await newAppointment.save();
+        
+        res.status(201).json({ newAppointment });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 module.exports = {
     fetchDoctors,
@@ -141,4 +142,4 @@ module.exports = {
     fetchDoctorAppointments,
     createDoctorAppointment,
     showAllDoctorAppointments,
-}
+};

@@ -6,7 +6,7 @@ const doctorData = require("../models/doctor");
 // Get list of all patients
 const fetchPatients = async (req, res) => {
     try {
-        const patients = await patientData.find().sort({ "lastName": 1 });
+        const patients = await patientData.find().sort({ "paitentid": 1 });
         res.json({ patients });
     } catch (error) {
         res.status(500).json({ message: "Error fetching patients" });
@@ -14,21 +14,28 @@ const fetchPatients = async (req, res) => {
 };
 
 // Search for patients by last name
-const applyPatientSearch = async (req, res) => {
+// const applyPatientSearch = async (req, res) => {
+//     const filter = req.params.filter;
+//     console.log("hi");
+//     try {
+//         const patients = await patientData.find({
+//             lastName: { $regex: filter } // Case insensitive search
+//         });
+//         res.json({ patients });
+//     } catch (error) {
+//         res.status(500).json({ message: "Error searching patients" });
+//     }
+// };
+const applyPatientSearch = async(req,res) => {
     const filter = req.params.filter;
-    try {
-        const patients = await patientData.find({
-            lastName: { $regex: filter, $options: 'i' } // Case insensitive search
-        });
-        res.json({ patients });
-    } catch (error) {
-        res.status(500).json({ message: "Error searching patients" });
-    }
-};
+    const patients = await patientData.find({ lastName: {$regex: filter}}) ;
+    res.json({patients})
+    
+}
 
 // Get a patient's information based on a specified ID
 const fetchPatient = async (req, res) => {
-    const patientId = req.params.patientid;
+    const patientId = req.params.id;
     try {
         const patient = await patientData.findById(patientId);
         if (!patient) {
@@ -56,7 +63,7 @@ const createPatient = async (req, res) => {
 
 // Update patient's information
 const updatePatient = async (req, res) => {
-    const patientId = req.params.patientid;
+    const patientId = req.params.id;
     const patientUpdates = req.body;
     try {
         const updatedPatient = await patientData.findByIdAndUpdate(patientId, patientUpdates, { new: true });
@@ -71,7 +78,7 @@ const updatePatient = async (req, res) => {
 
 // Add a new prescription for a specified patient
 const addPrescription = async (req, res) => {
-    const patientId = req.params.patientid;
+    const patientId = req.params.id;
     const prescription = req.body;
     const newPrescription = new prescriptionData(prescription);
     try {
@@ -87,7 +94,7 @@ const addPrescription = async (req, res) => {
 
 // Get list of prescriptions for a specified patient
 const getPrescriptions = async (req, res) => {
-    const patientId = req.params.patientid;
+    const patientId = req.params.id;
     try {
         const patient = await patientData.findById(patientId).populate("prescriptions");
         if (!patient) {
@@ -101,7 +108,8 @@ const getPrescriptions = async (req, res) => {
 
 // Delete patient
 const deletePatient = async (req, res) => {
-    const patientId = req.params.patientid;
+    const patientId = req.params.id;
+    console.log(patientId);
     try {
         await patientData.findByIdAndDelete(patientId);
         res.json({ success: "Patient deleted" });
@@ -112,7 +120,7 @@ const deletePatient = async (req, res) => {
 
 // Get list of all upcoming appointments for specified patient
 const fetchPatientAppointments = async (req, res) => {
-    const patientId = req.params.patientid;
+    const patientId = req.params.id;
     try {
         const appointments = await appointmentData.find({
             patientId: patientId,
@@ -126,8 +134,9 @@ const fetchPatientAppointments = async (req, res) => {
 
 // Get all appointments (past and upcoming) for a specified patient
 const showAllPatientAppointments = async (req, res) => {
-    const patientId = req.params.patientid;
+    const patientId = req.params.id;
     const filter = req.params.filter;
+    console.log("hi");
     try {
         let appointments;
         if (filter === "all") {
@@ -135,6 +144,7 @@ const showAllPatientAppointments = async (req, res) => {
         } else {
             return res.status(400).json({ message: "Invalid filter" });
         }
+        console.log(appointments);
         res.json({ appointments });
     } catch (error) {
         res.status(500).json({ message: "Error fetching all appointments" });
@@ -144,7 +154,8 @@ const showAllPatientAppointments = async (req, res) => {
 // Create an appointment for the specified patient
 const createPatientAppointment = async (req, res) => {
     const patientId = req.params.id;
-    const appointment = req.body;
+    const appointment = req.body.appointments;
+
     
     try {
         const selectedPatient = await patientData.findById(patientId);
@@ -152,11 +163,13 @@ const createPatientAppointment = async (req, res) => {
             return res.status(404).json({ message: "Patient not found" });
         }
 
-        const doctor = await doctorData.findById(appointment.doctorid);
+        const doctor = await doctorData.findOne({ doctorid: appointment.doctorId });
+
+        console.log(doctor);
         if (!doctor) {
             return res.status(404).json({ message: "Doctor not found" });
         }
-
+        
         const today = new Date();
         if (new Date(appointment.date) < today) {
             return res.status(400).json({ message: "Please choose a future date" });
@@ -176,7 +189,7 @@ const createPatientAppointment = async (req, res) => {
             patientName: selectedPatient.firstName + " " + selectedPatient.lastName,
             patientId: patientId,
             doctorName: appointment.doctorName,
-            doctorId: appointment.doctorid,
+            doctorId: appointment.doctorId,
             reasonForAppointment: appointment.reasonForAppointment,
             date: appointment.date,
             time: appointment.time,
@@ -184,8 +197,9 @@ const createPatientAppointment = async (req, res) => {
             Amount: appointment.Amount,  // Ensure Amount is included
             status: appointment.status,  // Ensure status is included
         });
-
+        console.log(newAppointment);
         await newAppointment.save();
+        
         res.status(201).json({ newAppointment });
     } catch (error) {
         res.status(500).json({ message: error.message });
