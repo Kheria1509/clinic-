@@ -1,6 +1,7 @@
 /* General application styling */
 .App {
   background-color: #f9f9f9; /* Light background color for the app */
+  font-family: 'Roboto', sans-serif; /* Modern, clean font */
 }
 
 html {
@@ -13,122 +14,101 @@ html {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f7f9fc; /* Light background color */
+  /* background-color: #f0f2f5; */
+  padding: 20px;
 }
 
-/* Auth form container styling */
-.Auth-form-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(to right, #e0e0e0, #f9f9f9); /* Gradient background */
-}
-
-/* Styling for the form */
-.auth-form, .Auth-form {
+/* Auth form styling */
+.auth-form {
   width: 100%;
-  max-width: 420px;
-  background-color: white;
-  padding: 30px 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd; /* Border to define form edges */
+  max-width: 600px; /* Wider form for professional desktop look */
+  background-color: #fff;
+  padding: 60px 40px; /* Spacious padding */
+  border-radius: 15px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1); /* Stronger shadow for depth */
+  border: 1px solid #e0e0e0;
   box-sizing: border-box;
 }
 
-/* Styling for form content */
-.auth-form-content, .Auth-form-content {
-  text-align: center;
-}
-
-/* Title styling */
-.auth-form-title, .Auth-form-title {
-  font-size: 24px;
+/* Form title styling */
+.auth-form-title {
+  font-size: 28px;
   font-weight: 700;
   color: #333;
-  margin-bottom: 20px;
-  border-bottom: 2px solid rgb(101, 200, 254); /* Underline effect */
-  padding-bottom: 10px; /* Padding below title */
+  margin-bottom: 30px;
+  border-bottom: 3px solid rgb(101, 200, 254);
+  padding-bottom: 15px;
 }
 
 /* Input group styling */
-.input-group, .form-group {
-  margin-bottom: 15px;
+.input-group {
+  margin-bottom: 20px;
   text-align: left;
 }
 
 /* Label styling */
-.input-group label, .form-group label {
+.input-group label {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   color: #555;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 /* Input field styling */
 .form-control {
-  width: calc(100% - 20px); /* Full-width minus padding */
-  padding: 12px;
+  width: calc(100% - 20px);
+  padding: 14px;
   border: 1px solid #ddd;
-  border-radius: 8px; /* Rounded corners for inputs */
+  border-radius: 10px;
   box-sizing: border-box;
-  margin: 10px 0; /* Spacing between input fields */
-  transition: box-shadow 0.3s ease; /* Smooth shadow transition */
+  margin: 12px 0;
+  font-size: 16px;
+  transition: box-shadow 0.3s ease;
 }
 
 .form-control:focus {
-  border-color: rgb(101, 200, 254); /* Highlight border color */
+  border-color: rgb(101, 200, 254);
   outline: none;
-  box-shadow: 0px 0px 8px rgba(101, 200, 254, 0.4); /* Subtle shadow on focus */
+  box-shadow: 0px 0px 10px rgba(101, 200, 254, 0.4);
 }
 
 /* Button styling */
-.auth-form-login-button, .Auth-form-login-button {
+.auth-form-login-button {
   width: 100%;
-  padding: 12px;
+  padding: 16px;
   font-size: 18px;
   color: white;
-  background-color: rgb(101, 200, 254); /* Primary color */
+  background-color: rgb(101, 200, 254);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  text-align: center;
   margin-top: 30px;
 }
 
-.auth-form-login-button:hover, .Auth-form-login-button:hover {
-  background-color: rgb(80, 160, 240); /* Darker shade on hover */
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+.auth-form-login-button:hover {
+  background-color: rgb(80, 160, 240);
+  box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.2);
 }
 
-/* Logout container styling */
-.Logout-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f0f2f5; /* Light grey background */
-}
+/* Full-width responsive layout */
+@media only screen and (min-width: 1024px) {
+  .auth-form {
+    max-width: 600px; /* Ensure the form is wide on desktops */
+    padding: 50px 40px;
+  }
 
-.Logout-box {
-  text-align: center;
-  background-color: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+  .auth-form-title {
+    font-size: 32px;
+  }
 
-.Logout-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-}
+  .form-control {
+    font-size: 18px;
+    padding: 16px;
+  }
 
-.Logout-message {
-  font-size: 16px;
-  color: #666;
+  .auth-form-login-button {
+    font-size: 20px;
+    padding: 16px;
+  }
 }

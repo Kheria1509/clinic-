@@ -11,8 +11,15 @@ const fetchDoctors = async(req,res) => {
 // Search for doctors by last name
 const applyDoctorSearch = async(req,res) => {
     const filter = req.params.filter;
+    const filterRegex = filter.split('').join('.*'); // Create regex pattern allowing for missing letters
+
     const doctors = await doctorData.find({
-        lastName: {$regex: filter}}) 
+      $or: [
+        { firstName: { $regex: filterRegex, $options: 'i' } }, // Case-insensitive and partial match for firstName
+        { lastName: { $regex: filterRegex, $options: 'i' } }   // Case-insensitive and partial match for lastName
+      ]
+    });
+    
     res.json({doctors})
 }
 
@@ -61,7 +68,7 @@ const fetchDoctorAppointments = async (req, res) => {
     try {
         // Ensure the correct method name is used
         const doctor = await doctorData.findOne({ _id: doctorId });
-console.log(doctor.doctorid);
+//console.log(doctor.doctorid);
         if (!doctor) {
             return res.status(404).json({ message: "Doctor not found" });
         }

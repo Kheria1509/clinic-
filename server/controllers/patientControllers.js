@@ -29,7 +29,17 @@ const fetchPatients = async (req, res) => {
 // };
 const applyPatientSearch = async(req,res) => {
     const filter = req.params.filter;
-    const patients = await patientData.find({ firstName: {$regex: filter}}) ;
+    //console.log(filter);
+    const filterRegex = filter.split('').join('.*'); // Create a regex pattern with missing letters in mind
+
+const patients = await patientData.find({
+  $or: [
+    { firstName: { $regex: filterRegex, $options: 'i' } },
+    { lastName: { $regex: filterRegex, $options: 'i' } }
+  ]
+});
+
+
     res.json({patients})
     
 }
@@ -110,7 +120,7 @@ const getPrescriptions = async (req, res) => {
 // Delete patient
 const deletePatient = async (req, res) => {
     const patientId = req.params.id;
-    console.log(patientId);
+    //console.log(patientId);
     try {
         await patientData.findByIdAndDelete(patientId);
         res.json({ success: "Patient deleted" });
@@ -164,7 +174,7 @@ const createPatientAppointment = async (req, res) => {
     
     try {
         const patient = await patientData.findOne({ _id: patientId });
-        console.log(patient.patientid );
+        //console.log(patient.patientid );
         if (!patient) {
             return res.status(404).json({ message: "Patient not found" });
         }
@@ -203,7 +213,7 @@ const createPatientAppointment = async (req, res) => {
             Amount: appointment.Amount,  // Ensure Amount is included
             status: appointment.status,  // Ensure status is included
         });
-        console.log(newAppointment);
+        //console.log(newAppointment);
         await newAppointment.save();
         
         res.status(201).json({ newAppointment });

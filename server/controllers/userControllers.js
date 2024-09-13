@@ -3,12 +3,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 async function login(req, res) {
-    console.log("i am in login");
+    
     try {
         const { email, password } = req.body;
-        console.log(email,password);
+        //console.log(email,password);
         const user = await User.findOne({email})
-        console.log(user);
+        //console.log(user);
         if (!user) {
             return res.sendStatus(401);
         }

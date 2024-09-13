@@ -29,7 +29,8 @@ connectToDb();
 
 // Routing
 app.use('/',(req,res,next)=>{
-    
+    //print req url
+   
     next();
 })
 app.post('/login', login);

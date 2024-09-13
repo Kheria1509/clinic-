@@ -23,6 +23,7 @@ export default function ShowPatients() {
   const [query, setQuery] = useState('');
   const applySearch = async (event) => {
     event.preventDefault();
+    console.log(query);
     const res = await axios.get(`/patients/${query}`);
     setPatients(res.data.patients);
   };
@@ -42,6 +43,7 @@ export default function ShowPatients() {
           label="Search by Last Name"
           variant="outlined"
           size="small"
+          value={query}
           onChange={event => setQuery(event.target.value)}
           style={{ width: '300px' }}
         />
@@ -56,6 +58,7 @@ export default function ShowPatients() {
             textTransform: 'none',
             borderRadius: '5px'
           }}
+          onClick={applySearch}
         >
           Search
         </Button>
