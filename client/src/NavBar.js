@@ -1,32 +1,28 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton, } from '@mui/material';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-  
 // Exporting Default Navbar to the App.js File
 export default function Navbar() {
-
-  
   return (
     <div>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ backgroundColor: 'black' }}>
         <Toolbar variant="dense">
-        <Link to='/'>
+          <Link to='/' style={{ textDecoration: 'none' }}>
             <Typography variant='subtitle1' color="white" padding="20px">
-               Patients 
+              Patients
             </Typography>
-            
-            </Link>
-        <Link to='/doctors'>
+          </Link>
+          <Link to='/doctors' style={{ textDecoration: 'none' }}>
             <Typography variant='subtitle1' color="white" padding="20px">
-               Doctors 
+              Doctors
             </Typography>
-        </Link>
-        <Link to='/logout'>
+          </Link>
+          <Link to='/logout' style={{ textDecoration: 'none' }}>
             <Typography variant='subtitle1' color="white" padding="20px">
-               Logout  
+              Logout
             </Typography>
-        </Link>
+          </Link>
         </Toolbar>
       </AppBar>
     </div>

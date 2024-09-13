@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authStores from '../stores/authStores'
-import { Grid } from '@mui/material';
+import authStores from '../stores/authStores';
+import { Grid, Typography, Box } from '@mui/material';
 
 export default function LogoutPage() {
     const store = authStores();
@@ -10,25 +10,28 @@ export default function LogoutPage() {
     useEffect(() => {
         store.logout();
         returnToLogin();
-    },[])
+    }, []);
 
-    const returnToLogin = async() => {
+    const returnToLogin = async () => {
         await new Promise(r => setTimeout(r, 2000));
-        navigate("/login")
-    }
+        navigate("/login");
+    };
 
     return (
         <Grid
             container
-            spacing={0}
-            direction="column"
-            alignItems="center"
-            justifyContent="center"
-            style={{ minHeight: '100vh' }}
-            >
-            <Grid item xs={3}>
-                <h3 className="Auth-form-title">You have been logged out. </h3>  
-            </Grid>   
-        </Grid> 
-    )
+            className="Logout-container"
+        >
+            <Grid item xs={12} md={4}>
+                <Box className="Logout-box">
+                    <Typography variant="h4" className="Logout-title">
+                        You have been logged out.
+                    </Typography>
+                    <Typography variant="body1" className="Logout-message">
+                        Redirecting you to the login page...
+                    </Typography>
+                </Box>
+            </Grid>
+        </Grid>
+    );
 }

@@ -29,7 +29,21 @@ export default function ContactInfo(props) {
 
     return(
         <>
-        <Button variant="outlined" size="small" color="inherit" onClick={handleOpen}> Contact Info </Button>
+        <Button 
+                variant="outlined" 
+                size="small" 
+                onClick={handleOpen}
+                sx={{ 
+                    color: '#4CAF50', // Text color
+                    borderColor: '#4CAF50', // Border color
+                    '&:hover': {
+                        borderColor: '#45a049', // Darker green on hover
+                        backgroundColor: '#f1f1f1' // Light background on hover
+                    }
+                }}
+            >
+                Contact Info
+            </Button>
         <Modal
         open={open}
         onClose={handleClose}

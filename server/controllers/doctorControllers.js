@@ -53,30 +53,43 @@ const deleteDoctor = async(req,res) => {
     await doctorData.findByIdAndDelete(doctorId);
     res.json({success: "Doctor deleted"});
 }
+// Get all appointments ( upcoming) for a specified doctor
+const fetchDoctorAppointments = async (req, res) => {
+    const doctorId = req.params.id;
+    //console.log("Doctor ID:", doctorId); // Debugging
 
-// Get list of all upcoming appointments for specified doctor
-const fetchDoctorAppointments = async(req,res) => {
-    id = req.params.id;
     try {
-        const doctor = await doctorData.findById(id);
-        const appointments  = await appointmentData.find({
-            doctorId: id,
-            date: {$gte: new Date()}
-        }).sort({"date":1, "time":1})
-        res.json({appointments})
+        // Ensure the correct method name is used
+        const doctor = await doctorData.findOne({ _id: doctorId });
+console.log(doctor.doctorid);
+        if (!doctor) {
+            return res.status(404).json({ message: "Doctor not found" });
+        }
+
+        const appointments = await appointmentData.find({
+            doctorId: doctor.doctorid,
+            date: { $gte: new Date() }
+        }).sort({ date: 1, time: 1 });
+       // console.log(appointments);
+        res.json({ appointments });
     } catch (err) {
-        console.log(err)
+        console.error("Error fetching appointments:", err);
+        res.status(500).json({ message: "Error fetching appointments" });
     }
-}
+};
+
 
 // Get all appointments (past and upcoming) for a specified doctor
 const showAllDoctorAppointments = async(req,res) => {
-    const id = req.params.id;
+    const doctorId = req.params.id;
+    const doctor = await doctorData.findOne({ _id: doctorId });
+    //console.log(doctor.doctorid);
+    
     const filter = req.params.filter;
     if (filter === "all")
     {
         const appointments = await appointmentData.find({
-            doctorId: id
+            doctorId: doctor.doctorid
         }).sort({"date":1, "time":1})
         res.json({appointments})
     }
@@ -88,8 +101,10 @@ const createDoctorAppointment = async (req, res) => {
     const doctorId = req.params.id;
     const appointment = req.body.appointments;
 
+    
     try {
-        const selectedDoctor = await doctorData.findById(doctorId);
+        const selectedDoctor = await doctorData.findOne({_id: doctorId});
+       // console.log(selectedDoctor.doctorid);
         if (!selectedDoctor) {
             return res.status(404).json({ message: "Doctor not found" });
         }
@@ -100,7 +115,7 @@ const createDoctorAppointment = async (req, res) => {
         }
 
         const existingAppointment = await appointmentData.findOne({
-            doctorId: doctorId,
+            doctorId: selectedDoctor.doctorid,
             date: appointment.date,
             time: appointment.time,
         });
@@ -113,7 +128,7 @@ const createDoctorAppointment = async (req, res) => {
             patientName: appointment.patientName,
             patientId: appointment.patientId,
             doctorName: selectedDoctor.firstName + " " + selectedDoctor.lastName,
-            doctorId: doctorId,
+            doctorId: selectedDoctor.doctorid,
             reasonForAppointment: appointment.reasonForAppointment,
             date: appointment.date,
             time: appointment.time,
@@ -121,7 +136,7 @@ const createDoctorAppointment = async (req, res) => {
             Amount: appointment.Amount,  // Ensure Amount is included
             status: appointment.status,  // Ensure status is included
         });
-        
+       // console.log(newAppointment);
 
         await newAppointment.save();
         

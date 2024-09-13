@@ -8,6 +8,7 @@ const fetchPatients = async (req, res) => {
     try {
         const patients = await patientData.find().sort({ "paitentid": 1 });
         res.json({ patients });
+        
     } catch (error) {
         res.status(500).json({ message: "Error fetching patients" });
     }
@@ -28,7 +29,7 @@ const fetchPatients = async (req, res) => {
 // };
 const applyPatientSearch = async(req,res) => {
     const filter = req.params.filter;
-    const patients = await patientData.find({ lastName: {$regex: filter}}) ;
+    const patients = await patientData.find({ firstName: {$regex: filter}}) ;
     res.json({patients})
     
 }
@@ -121,9 +122,11 @@ const deletePatient = async (req, res) => {
 // Get list of all upcoming appointments for specified patient
 const fetchPatientAppointments = async (req, res) => {
     const patientId = req.params.id;
+    const patient = await patientData.findOne({ _id: patientId });
+   // console.log(patient.patientid);    
     try {
         const appointments = await appointmentData.find({
-            patientId: patientId,
+            patientId: patient.patientid,
             date: { $gte: new Date() }
         }).sort({ "date": 1, "time": 1 });
         res.json({ appointments });
@@ -135,16 +138,18 @@ const fetchPatientAppointments = async (req, res) => {
 // Get all appointments (past and upcoming) for a specified patient
 const showAllPatientAppointments = async (req, res) => {
     const patientId = req.params.id;
+    const patient = await patientData.findOne({ _id: patientId });
     const filter = req.params.filter;
-    console.log("hi");
+   
+    //console.log(patient.patientid);
     try {
         let appointments;
         if (filter === "all") {
-            appointments = await appointmentData.find({ patientId: patientId }).sort({ "date": 1, "time": 1 });
+            appointments = await appointmentData.find({ patientId: patient.patientid}).sort({ "date": 1, "time": 1 });
         } else {
             return res.status(400).json({ message: "Invalid filter" });
         }
-        console.log(appointments);
+        //console.log(appointments);
         res.json({ appointments });
     } catch (error) {
         res.status(500).json({ message: "Error fetching all appointments" });
@@ -155,17 +160,18 @@ const showAllPatientAppointments = async (req, res) => {
 const createPatientAppointment = async (req, res) => {
     const patientId = req.params.id;
     const appointment = req.body.appointments;
-
+    //console.log(patientId);
     
     try {
-        const selectedPatient = await patientData.findById(patientId);
-        if (!selectedPatient) {
+        const patient = await patientData.findOne({ _id: patientId });
+        console.log(patient.patientid );
+        if (!patient) {
             return res.status(404).json({ message: "Patient not found" });
         }
 
         const doctor = await doctorData.findOne({ doctorid: appointment.doctorId });
 
-        console.log(doctor);
+       // console.log(doctor.doctorid);
         if (!doctor) {
             return res.status(404).json({ message: "Doctor not found" });
         }
@@ -186,8 +192,8 @@ const createPatientAppointment = async (req, res) => {
         }
 
         const newAppointment = new appointmentData({
-            patientName: selectedPatient.firstName + " " + selectedPatient.lastName,
-            patientId: patientId,
+            patientName: patient.firstName + " " + patient.lastName,
+            patientId: patient.patientid,
             doctorName: appointment.doctorName,
             doctorId: appointment.doctorId,
             reasonForAppointment: appointment.reasonForAppointment,
