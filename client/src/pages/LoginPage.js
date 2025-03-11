@@ -13,12 +13,34 @@ function LoginPage() {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      style={{ minHeight: '100vh', padding: '0 20px' }} // Padding added for responsiveness
+      style={{ 
+        minHeight: '50vh', 
+        padding: '0 20px', 
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', // Subtle gradient background
+      }}
     >
-      <Typography variant="h3" style={{ fontWeight: '600', marginBottom: '40px', color: '#333' }}>
+      <Typography 
+        variant="h3" 
+        style={{ 
+          fontWeight: '700', 
+          paddingTop: '20px', 
+          color: '#333', 
+          letterSpacing: '1px', 
+          marginBottom: '30px', 
+        }}
+      >
         Clinic Management System
       </Typography>
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid 
+        item 
+        style={{ 
+           // Fixed width for the login card
+        
+          backgroundColor: '#fff', // White background for the card
+          borderRadius: '15px', // Rounded corners
+          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)', // Subtle shadow
+        }}
+      >
         <LoginForm />
       </Grid>
     </Grid>

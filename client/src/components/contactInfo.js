@@ -23,7 +23,7 @@ export default function ContactInfo(props) {
         setOpen(true);
         const res = await axios.get(`/patient/${props.id}`);
         setPatient(res.data.patient);
-        console.log(patient)
+       // console.log(patient)
     }
     const handleClose = () => setOpen(false);
 

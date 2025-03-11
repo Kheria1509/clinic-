@@ -14,19 +14,18 @@ html {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* background-color: #f0f2f5; */
+  /* Subtle gradient background */
   padding: 20px;
 }
 
 /* Auth form styling */
 .auth-form {
   width: 100%;
-  max-width: 600px; /* Wider form for professional desktop look */
-  background-color: #fff;
-  padding: 60px 40px; /* Spacious padding */
-  border-radius: 15px;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1); /* Stronger shadow for depth */
-  border: 1px solid #e0e0e0;
+  max-width: 400px; /* Fixed width for the login card */
+  padding: 40px;
+ /* White background for the card */
+  border-radius: 15px; /* Rounded corners */
+   /* Subtle shadow */
   box-sizing: border-box;
 }
 
@@ -38,6 +37,7 @@ html {
   margin-bottom: 30px;
   border-bottom: 3px solid rgb(101, 200, 254);
   padding-bottom: 15px;
+  text-align: center;
 }
 
 /* Input group styling */
@@ -56,7 +56,7 @@ html {
 
 /* Input field styling */
 .form-control {
-  width: calc(100% - 20px);
+  width: 100%;
   padding: 14px;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -83,7 +83,7 @@ html {
   border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .auth-form-login-button:hover {
@@ -94,8 +94,8 @@ html {
 /* Full-width responsive layout */
 @media only screen and (min-width: 1024px) {
   .auth-form {
-    max-width: 600px; /* Ensure the form is wide on desktops */
-    padding: 50px 40px;
+    max-width: 400px; /* Ensure the form is wide on desktops */
+    padding: 40px;
   }
 
   .auth-form-title {

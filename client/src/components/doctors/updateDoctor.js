@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Box, TextField, Button, Typography, Alert } from '@mui/material';
+import { Box, TextField, Button, Typography, Alert, Modal } from '@mui/material';
 import axios from "axios";
 
 export default function UpdateDoctor(props) {
@@ -17,6 +17,8 @@ export default function UpdateDoctor(props) {
         severity: 'success',
     });
 
+    const [openModal, setOpenModal] = useState(false);
+
     const toggleUpdate = (doctor) => {
         setUpdateDoctor({
             _id: doctor._id,
@@ -24,6 +26,12 @@ export default function UpdateDoctor(props) {
             lastName: doctor.lastName,
             specialty: doctor.specialty,
         });
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setUpdateDoctor({ _id: null });
     };
 
     const update = async () => {
@@ -54,22 +62,24 @@ export default function UpdateDoctor(props) {
             >
                 Update
             </Button>
-            {updateDoctor._id && (
+            <Modal
+                open={openModal}
+                onClose={handleCloseModal}
+                aria-labelledby="update-doctor-modal"
+                aria-describedby="update-doctor-form"
+            >
                 <Box
-                    component="form"
                     sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        backgroundColor: 'background.paper',
-                        padding: 2,
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
                         borderRadius: 1,
-                        boxShadow: 3,
-                        width: '300px',
-                        mx: 'auto',
                     }}
-                    noValidate
-                    autoComplete="off"
                 >
                     <Typography variant="h6" sx={{ mb: 2 }}>
                         Update Doctor
@@ -121,13 +131,13 @@ export default function UpdateDoctor(props) {
                         <Button
                             variant="outlined"
                             color="secondary"
-                            onClick={() => setUpdateDoctor({ _id: null })}
+                            onClick={handleCloseModal}
                         >
                             Cancel
                         </Button>
                     </Box>
                 </Box>
-            )}
+            </Modal>
         </>
     );
 }
